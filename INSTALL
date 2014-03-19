@@ -1,0 +1,115 @@
+INSTALL for Frescobaldi 2.0.
+============================
+
+You can run Frescobaldi without installing. Just unpack and then run:
+
+  python frescobaldi
+
+
+The Frescobaldi package is based on distutils. No build process is needed as
+Frescobaldi is fully written in the interpreted Python language. To install in
+the default location:
+
+  sudo python setup.py install
+
+
+To run Frescobaldi, then simply type
+
+  frescobaldi
+
+
+If you want to install into /usr instead of /usr/local:
+
+  python setup.py install --prefix=/usr
+
+
+If you have a Debian-based system such as Ubuntu, and you get the error
+message "ImportError: No module named frescobaldi_app.main", try:
+
+  python setup.py install --install-layout=deb
+
+
+See the distutils documentation for more install options.
+
+
+Dependencies:
+=============
+
+Frescobaldi 2.0 is written in Python version 2.6 or 2.7 (3.x support is planned)
+and depends on Qt4.7 and PyQt4.8, and uses the python-poppler-qt4 binding to
+Poppler for the built-in PDF preview.
+
+For MIDI the PortMidi library is used, either via importing 'pypm',
+'pyportmidi._pyportmidi, or, if that is not available, loading the pygame.pypm
+module from pygame; or, as a last resort, embedding the PortMidi C-library via
+ctypes. MIDI is optional.
+
+Required:
+    Python (2.6 or 2.7):
+        http://www.python.org/
+    Qt4 (>= 4.7):
+        http://qt.nokia.com/
+    PyQt4 (>= 4.8.3):
+        http://www.riverbankcomputing.co.uk/software/pyqt/
+    Poppler:
+        http://poppler.freedesktop.org/
+    python-poppler-qt4:
+        https://github.com/wbsoft/python-poppler-qt4
+
+Optional:
+    PortMidi:
+        http://portmedia.sourceforge.net/portmidi/
+
+Of course you'll need to install one or more versions of LilyPond!
+
+
+"Freeze" installer:
+===================
+
+The freeze.py script can create a self-contained Windows-installer, bundling all
+of Python, PyQt4, popplerqt4 and pypm (from pygame) when used on MS Windows.
+To use the script you need cx_Freeze and Inno Setup.
+
+
+Mac OS X application bundle:
+============================
+
+The macosx/mac-app.py script can build an application bundle on Mac OS X.
+To see the usage notes, run:
+
+  python macosx/mac-app.py -h
+
+The application bundle will be created inside a 'dist' folder in the current
+working directory. The application bundle is NOT self-contained.
+To use the script you need argparse (included in Python >= 2.7) and py2app.
+
+
+For Linux distribution packagers:
+=================================
+
+Frescobaldi contains some files by default which are also available in other
+packages often used in Linux distributions. It is possible to remove those
+files after installing/packaging and make Frescobaldi depend on the package
+containing those files. This makes the filesystem less cluttered, and copyright
+files simpler.
+
+Icons:
+You can remove the frescobaldi_app/icons/Tango directory, and make Frescobaldi
+depend on the tango-icon-theme package instead.
+
+Hyphentation dictionaries:
+You can remove the hyph_*.dic files from frescobaldi_app/hyphdicts, and make
+Frescobaldi depend on a package that installs hyphenation dictionaries in
+/usr/share/hyphen/ (or another dictionary listed by default in frescobaldi_app/
+hyphendialog.py).
+
+
+The ly module:
+==============
+
+Frescobaldi provides a Python module (ly) that can be installed separately,
+without requiring the rest of Frescobaldi. This can be done using the setup.py
+script in the python-ly directory. This folder also contains the command line
+tool "ly" that makes the functionality of the ly module accessible via the
+command line.
+

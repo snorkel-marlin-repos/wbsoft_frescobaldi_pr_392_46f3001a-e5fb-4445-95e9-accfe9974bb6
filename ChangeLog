@@ -1,0 +1,542 @@
+ChangeLog of Frescobaldi, http://www.frescobaldi.org/
+=====================================================
+
+
+Changes in 2.0.16 -- 
+
+* Translations:
+  - updated: nl
+* New features
+  - preference to automatically strip trailing whitespace on save (issue #274)
+  - in Tools -> Rhythm: new command to remove duration scalings that contain 
+    a fraction value (the action was already available for some time, but it 
+    wasn't in the menu)
+* Improvements:
+  - jumps in the Document Outline also allow navigating back
+  - autocompile does only happen when a document has toplevel markup or music
+  - LilyPond instance can be selected in convert-ly dialog (wish #311)
+  - Score Wizard: In the midi section the \tempo x=y syntax is now used when
+    LilyPond version >= 2.16 is used (issue #337)
+  - in the builtin manual, if there is no "Next:" page, add a link to the next
+    page of the first parent page that has a next page. The link is called
+    "Next Chapter:" and allows for continuous reading of the manual.
+* Bugfixes:
+  - fix html export and copy not using the correct color scheme
+  - fix AttributeError in handle_lyricmode while typing \lyricmode
+  - fix LilyPond version chooser not defaulting to the default LilyPond version
+  - fix indenter aligning on comment
+
+
+Changes in 2.0.15 -- March 11th, 2014
+
+* Translations:
+  - updated: nl, fr
+* New features:
+  - in context menu: Jump to definition (wish #123)
+  - in View menu: view file or definition at cursor, combines the old
+    File->Open File at Cursor action with the new Jump to definition action
+  - new toolbar buttons to browse back after a jump to definition
+* Improvements:
+  - better highlighting of figuremode
+* Bugfixes:
+  - fix ValueError message when typing << >> or \partcombine
+  - fix IndexError when typing 'variable ='
+
+
+Changes in 2.0.14 -- March 7th, 2014
+
+* Translations:
+  - updated: nl, fr
+* New features:
+  - the status bar now shows the position in the music or the length of the
+    selected music
+  - highlighting and auto-completion for commands that are new or have changed
+    syntax in LilyPond 2.18, such as \hide, \omit, \undo, \override, \tweak,
+    \accidentalStyle, etc.
+  - New editor option to wrap lines in the editor view to avoid horizontal
+    scrolling (wish #45)
+  - Custom engrave: the anti-alias-factor can be set in the dialog (wish #361)
+  - on Mac OS X the applications remains active when all main windows are
+    closed. This is expected behaviour on Mac OS X.
+  - New builtin snippet, linked to Ctrl+D by default, to double the current
+    line or selection (issue #340)
+  - A new preference for new documents: whether a new document is created empty,
+    with the preferred LilyPond version in it, or using a template from the
+    snippets list
+  - New menu command: LilyPond->Show available fonts (wish #341)
+  - Music View: rendering in small sizes has been improved
+* Improvements:
+  - In the score wizard it is possible to enter a custom string tuning for the
+    plucked string instruments, and the Ukulele is added (issue #342)
+  - In the score wizard you can enable Smart neutral stem direction, which adds
+    the Melody_engraver to the Voice context, resulting in a logical direction
+    for notes on the middle staff line (issue #371)
+  - Print source, Copy colored HTML and Export source as colored HTML: add line
+    numbers if enabled in the preferences.
+  - In the Editor preferences, it is adjustable whether HTML export or copy use
+    a stylesheet or inline style attributes.
+  - It is now possible to copy syntax-highlighted HTML as plain text to the
+    clipboard, by enabling the preference setting.
+  - MIDI input: add key signature alterations mapping, by Olivier Samyn
+  - New barline types in the Quick Insert panel, the barlines are written
+    in the correct style, depending on the LilyPond version set in the document
+    (issue #365).
+  - In the output-suffix (the scheme output-suffix variable or 
+    \bookOutputSuffix), non-alphanumeric characters (except '-' and '_') are 
+    replaced with '_', just like LilyPond itself does it (issue #373).
+* Bug fixes:
+  - Fixed issue 336: TypeError on MusicXml export
+  - Fixed error message when exporting keyboard shortcuts on platforms that do
+    not have the HOME environment variable set
+  - Fixed IndexError when transposed notes would get unexisting alterations,
+    e.g. when a cis is transposed from c to cisis. The note is then altered,
+    just like LilyPond handles this.
+* Temporarily removed feature:
+  - MusicXML export has been temporarily removed from the File->Export menu. 
+    It is still visible in the git checkout. It is also available in the ly 
+    command (in the python-ly package, and also in Frescobaldi's git checkout) 
+    but it needs more testing and robustness before it is usable in Frescobaldi.
+
+
+Changes in 2.0.13 -- December 31st, 2013
+
+* Translations:
+  - updated: nl, fr
+* New features:
+  - A new option LilyPond->Auto-engrave, that runs the engraver in preview mode
+    everytime the document changes
+  - An option to hide log display for automatically started engraving jobs
+  - Real-time Midi capturing, contributed by Manuel Mchalwat (this was actually
+    in 2.0.12, I just forgot to write it in the ChangeLog!)
+  - Basic MusicXML export, contributed by Peter Bjuhr (this was also already
+    added in Frescobaldi 2.0.12)
+  - The "master" variable is back, allbeit in a slightly different
+    implementation: the redirected filename is not directly given to a LilyPond
+    process running on behalf of the current document, but the other document
+    is loaded (if it wasn't already) and LilyPond is run on that document.
+* Bug fixes:
+  - Fix UnboundLocalError in ly.docinfo e.g. when showing the Tools->Pitch->
+    Language menu
+  - Fix issue 332: Cursor didn't move on undo/redo
+  - Fix issue 315: chords: \include "predefined-guitar-fretboards.ly"
+    (the file was added, but the include files weren't written in the document)
+
+
+Changes in 2.0.12 -- December 26th, 2013
+
+* Translations:
+  - updated: cs, nl, fr, es
+* New features:
+  - Edit->Select Block has finally been implemented
+  - A viewer for LilyPond-generated SVG files has been added by Peter Bjuhr. 
+    This viewer (accessible via Tools->SVG Viewer) currently has one-way point 
+    and click. This only works with recent development versions of LilyPond, 
+    that add the point and click information to SVG files. In the future, the
+    SVG view may become a fully fledged graphical music editor.
+  - The default output format can be set in the LilyPond preferences (the 
+    current options are PDF or SVG, the default is PDF)
+* Improvements:
+  - The indenter's handling of tabs and spaces has been improved. A tab always
+    starts a new indent level, and aligning is now always done with spaces.
+    The default is still using 2 spaces for indent, but it is now configurable
+    in a new settings panel Editor Preferences.
+  - Besides the good old Preview and Publish modes a new mode has been added:
+    Layout Control. This mode uses the settings on the preview mode panel, which
+    has been renamed to Layout Control Options. The layout of the panel has been
+    improved. The Preview mode is reverted back to enabling only point and click
+    links. In the Engrave (custom) dialog the run mode can be chosen and the
+    commandline edited directly.
+  - Entering staccatissimo writes -! when the document specifies a LilyPond
+    version >= 2.17.25, otherwise -|
+  - When editing keyboard shortcuts, conflicts are directly shown as they are
+    entered; better support French keyboards (contributed by Nicolas Malarmey)
+  - Better Mac OS X icons (contributed by Davide Liessi)
+  - The internal handling of manipulations like transpose, translate, and the
+    various rhythm commands has become less dependent on Frescobaldi code.
+    These functionality now resides in the ly module and could be used by 
+    other applications. The commands now can work on any ly.document, which 
+    need not be a Frescobaldi document.
+  - The internal help system has seen a massive overhaul: help files are now
+    very easy to write in a simplified markdown-like syntax. Adding help pages
+    is very easy by dropping a *.md file in the userguide/ directory. Every
+    paragraph in a help file is automatically added to the POT file and can be
+    translated by editing the language's PO file.
+* Bug fixes:
+  - Music View: horizontal scrolling using trackpad now works with kinetic mode
+    enabled. Fixes #248.
+* Removed feature:
+  - The 'master' variable is no longer supported, it's goal has been superseded
+    by the 'Always Engrave' option, which is also saved in the session. This
+    decision was taken to simplify the handling of files created on behalf of
+    a document.
+
+
+Changes in 2.0.11 -- October 16th, 2013
+
+* Translations:
+  - updated: cs, nl, fr, es
+* New features:
+  - New preview mode tool, enabling different modes to debug layout issues,
+    contributed by Urs Liska and some other LilyPond developers
+  - Frescobaldi now has a manpage, kindly provided by Ryan Kavanagh
+  - Import MusicXML (using musicxml2ly), contributed by Peter Bjuhr
+  - New Quick Insert buttons for different kinds of grace notes, contributed
+    by Peter Bjuhr
+  - Import and export of keyboard shortcuts and font & color schemes,
+    contributed by Nicolas Malarmey.
+  - New Modal Transpose action, contributed by Christopher Bryan
+  - New actions to remove articulations etc. from music (wish #180)
+  - Edit->Copy to Snippet, to copy the selection or the full document
+    contents to a new snippet
+* Improvements:
+  - highlighting and auto-completion of Scheme code has been improved
+    by Nicolas Malarmey. 
+  - when switching documents with multiple editor views open, and one of the
+    views displays the document, that view is made current, instead of changing
+    the document in the current view.
+  - the tempo-tapping button in the score wizard now uses the average clicking
+    speed instead of computing the bpm at each click (implementing wish #169)
+  - under the File menu there is also a New with Wizard... action calling the
+    score wizard, creating a new document when clicking Ok, contributed by Urs
+    Liska
+  - Word-related cursor movements have been improved. The backslash is now
+    considered a word boundary, even if there are no spaces between several
+    backslashed commands. Fixes wish #106.
+* Bug fixes:
+  - various fixes and improvements on Mac OS X by Davide Liessi
+  - fix splash screen shown as grey rectangle on some systems
+  - in the LilyPond log, clicking on error mesages in files with '..' in their
+    path (happens when using e.g. \include "../blabla.ly") now works.
+
+
+Changes in 2.0.10 -- May 12th, 2013
+
+* Translations:
+  - updated: nl, de, fr, cs, es, it
+* New features:
+  - Document Outline tool with tooltips showing portions of the document.
+    The patterns that are used for the outline can be modified by the user.
+* Improvements:
+  - Highlight more music functions that were added in LilyPond 2.16
+  - Better chord mode highlighting
+* Bug fixes:
+  - fix QPyNullVariant error message on Mac OS X when setting helper app prefs
+  - fix Scorewizard error in Leadsheet with accompaniment and ambitus turned on
+  - fix #113: add files opened via file manager to recent files
+  - fix #143: don't count tremolo repeat as a duration
+
+
+Changes in 2.0.9 -- March 23rd, 2013
+
+* Translations:
+  - updated: nl, de, uk
+* New features:
+  - Frescobaldi now detects when other applications modify or delete open files
+    and displays the changes in a dialog, where the user can reload or save the
+    affected documents. The file-watching is turned on by default, but can be
+    disabled. (wish: issue #103)
+  - File->Reload and Reload All: reload the current document or all documents
+    from disk. This action can be undone with Ctrl-Z.
+  - Frescobaldi now can be configured to open the generated PDF files when
+    opening a LilyPond document, even if they are not up-to-date. It then shows
+    a red background in the document chooser. See Preferences->Tools->Music View
+  - Music->Reload: switches the Music View to the current source document and
+    re-checks for updated PDF documents. If there are no updated PDFs it even
+    tries to load non up-to-date PDFs (regardless of the setting above)
+  - New --list-sessions commandline option to list the named sessions
+  - New actions View->Matching Pair and Select Matching Pair to jump to or
+    select the range of matching parentheses, braces etc (wish: issue #105)
+  - Quick Insert: \melisma, \melismaEnd spanner button (idea: issue #88)
+* Improvements:
+  - Custom defined markup commands are also auto-completed
+  - Better default font on Windows
+  - Action "Always Engrave this document" also available in document context
+    menu (in documents list and in tabbar)
+  - Don't check included files multiple times for defined commands etc.
+  - Highlighting matching characters, such as slur, brace, << >>, etc does not
+    take a long time anymore when editing or moving through a long document
+  - string numbers are highlighted (and understood) correctly outside chords
+    (LilyPond 2.16 syntax change)
+  - Export colored HTML now uses CSS classes, makes it easy to change the high-
+    lighting in the HTML later (idea: issue #89)
+* Bug fixes:
+  - Fix hyphenation of words with accents (reported by Andreas Edlund)
+  - Fix Save As... on Mac OS X (issue #104)
+  - Fix startup failure on Mac OS X (issue #77)
+  - Fix QPyNullVariant error messages with some PyQt versions
+  - Workaround two PyQt bugs:
+    * fix score wizard AttributeError message when using sip-4.14.3/PyQt-4.9.6
+    * fix large delays in editor when using sip-4.14.3/PyQt-4.9.6 (issue #100)
+  - music highlighting of a note after \unset someVariable is now correct
+  - fix Python error message when a document (marked as Always engraved) is
+    engraved which didn't have yet the PDF displayed
+
+
+Changes in 2.0.8 -- September 14th, 2012
+
+* Translations:
+  - updated: ru, cs
+* New features:
+  - File->Open file at cursor (wish #84)
+* Improvements:
+  - always normalize paths in point&click links, so files included via
+    constructs like \include "../songs/song1.ly" are found
+* Bugfixes:
+  - fix behaviour of 'output' variable
+
+
+Changes in 2.0.7 -- August 16th, 2012
+
+* Translations:
+  - updated: nl, cs, it, fr, es
+* New features:
+  - command to show music view maximized, useful on small screens
+  - kinetic scrolling in the music view, making the movements easier on the
+    eyes, contributed by Richard Cognot
+  - music view scrollbars can be hidden via preferences->tools->music view
+* Improvements:
+  - status of "Always Engrave" is saved in session (wish #76)
+  - the 'View' -> 'Music View' submenu is now a top-level menu 'Music'
+* Bugfixes:
+  - fix "NameError: global name 'X_OK' is not defined" when a helper application
+    has an absolute path
+  - fix python exception when helper app does not exist, now a regular message
+    is shown
+
+
+Changes in 2.0.6 -- April 30th, 2012
+
+* Translations:
+  - New Ukrainian translation by Dmytro O. Redchuk
+  - updated: nl
+* Bugfixes:
+  - fix cut-assign
+  - fix startup failure on Windows when 'open in running app' is enabled and
+    the user's username has non-ascii characters (issue #53)
+  - fix TypeError on opening LilyPond documentation in some cases on Mac OS X
+
+
+Changes in 2.0.5 -- April 25th, 2012
+
+* Translations:
+  - updated: fr, nl, es
+* New features:
+  - Regions of text can be collapsed/expanded (View->Folding->Enable Folding)
+  - Files can be opened in running instance, if enabled in settings
+  - New document variable: 'output' which can be set to the basename, folder, or
+    list of names or folders to look for output documents. Overrides the default
+    behaviour of parsing the document for all the included files and LilyPond
+    commands that specify the output file name.
+  - New snippet action to recover changed or deleted built-in snippets
+  - New snippet action to configure keyboard shortcut without opening editor
+  - Alt+Up and Alt+Down jump between blank lines (implemented as snippets),
+    with Shift they select text
+  - New command in View->Music View and Music View contextmenu: "Original Size"
+  - Optionally scroll Music View while highlighting objects text cursor is at
+  - In-place editing by Shift-clicking a note or right-click->Edit in Place
+* Improvements:
+  - Copied images from Music View carry correct DPI information
+  - Autocomplete also looks for variable definitions in \include files
+  - Running convert-ly (or undoing it) does not erase point and click positions
+    anymore
+  - Saving a template now shows existing template names in a popup and warns
+    when (but allows) overwriting an existing template
+  - Much better default background color for the Music View
+  - When dragging the time slider in a MIDI file, program and controller changes
+    are followed (issue #26)
+  - On Windows, better try to find LilyPond even if it is not in the PATH
+  - Snippet editor warns when closing modified snippet
+  - Accelerators (the underlined characters) in menus such as Recent Files,
+    Session and Insert that are are automatically created, are determined in
+    a smarter way
+* Bugfixes:
+  - fix Ctrl+K deleting a line too much in some cases
+  - fix RuntimeError on Ctrl+N, Ctrl+F, Ctrl+W
+  - fix TypeError on running convert-ly with English messages on Windows
+* For Linux distribution packagers:
+  - The CC-licensed zoom-{in,out} icons are now replaced with GPLled ones
+
+
+Changes in 2.0.4 -- March 7th, 2012
+
+* Translations:
+  - updated: pl, nl, cs
+* New features:
+  - view->line numbers
+  - in the documents list, it is now possible to right-click a group of selected
+    documents (or a directory name, if grouping is enabled), to close or save
+    multiple documents at once.
+  - automatic completion in the snippet editor
+  - python snippets may now define a main() function that can do everything
+  - new delete-lines snippet, bound by default to Ctrl-K
+  - splash screen on startup (can be turned off in the preferences)
+* Improvements:
+  - opening many documents (e.g. a large session) is now much faster
+  - waiting for LilyPond to return information on Settings->Ok now does not
+    block the user interface anymore and shows progress if it takes some time
+  - built-in manual now documents settings and session dialog
+* Bug fixes:
+  - fix icon theme index files not in source tarball (regression since 2.0.3)
+  - fix hyphenation dictionaries not in source tarball
+  - fixed memory leak (closed documents that had been shown remained in memory)
+
+
+Changes in 2.0.3 -- February 17th, 2012
+
+* Translations:
+  - New translation: Brazillian, by Édio Mazera, thanks!
+  - updated translations: es, fr, it, nl
+* New features:
+  - pager in musicview toolbar
+  - tools->open command prompt to open a terminal window
+* Improvements:
+  - improved "Comment" snippet; add "Uncomment"
+  - Home and Shift+Home now move the cursor to the first non-space character
+  - Shift+Return now does not enter a line separator anymore, which could
+    cause wrong point and click locations
+  - blinking rectangle highlights new cursor position on point and click
+* Bug fixes:
+  - fix zooming Music View out while on last page (issue #32)
+  - changing keyboard shortcuts in preferences now works on Mac OS X
+  - fix { } or << >> inside lyricmode
+  - in doc browser, don't display bogus versions when network is inaccessible
+* For Linux distribution packagers:
+  - the bundled Tango icon set is now used as an icon theme, which makes it
+    possible for distribution packagers to remove the icons/Tango directory and
+    instead make Frescobaldi depend on the tango-icon-theme package.
+
+
+Changes in 2.0.2 -- January 16th, 2012
+
+* New features:
+  - optionally run LilyPond with English (untranslated) messages
+  - print button in help browser and documentation browser
+* Improvements:
+  - "Manage templates" command added in File->templates menu
+  - more snippets in Insert menu
+  - context menu on snippet list
+  - enlarged some too small icons
+  - added some more hyphenation dictionaries
+  - file entry fields (like in preferences) are faster
+  - on non-X11 platforms the maximized state of the window is remembered
+* Bug fixes:
+  - make terminating LilyPond work under Windows
+  - make convert-ly work under Windows
+  - snippet import/export now works in the Windows-installer binary
+  - PDF now correctly updates when "Save document on compile" is enabled
+
+
+Changes in 2.0.1 -- January 8th, 2012
+
+* Updated translations: cs, de
+* Bug fixes:
+  - fix accented letters in filenames on Windows
+* Improvements:
+  - some hyphenation dictionaries are now bundled
+  - font preference for documentation browser
+  - new self-contained installer for MS Windows
+
+
+Changes in 2.0.0 -- December 26th, 2011
+
+* Updated translations: fr, nl, es, it, cs
+* Bug fixes:
+  - when changing LilyPond instance that was default, keep it as default
+* New features:
+  - new dialog and snippet to set the fonts for a LilyPond document
+  - the tabs can be hidden and shown via the mainwindow context menu
+  - autocomplete on #'font-name, with font preview
+* Improvements:
+  - Shift-F1 (What's This) now works in dialogs
+  - the tab bar can be hidden via the main window context menu
+
+
+Changes in 1.9.5 -- December 20th, 2011
+
+* Updated translations: es, nl, cs
+* Bug fixes:
+  - charmap now avoids characters "narrow" builds of Python can't handle
+  - fix incorrect midi tempo when midi file contains tempo changes
+  - fix importing the pyportmidi._pyportmidi module if that is used
+  - really honor 'delete intermediate files' option
+* New features:
+  - Documents list with optional per-directory grouping
+  - helper applications can be specified to override operating system defaults
+  - list of generated files in LilyPond menu
+* Improvements:
+  - tooltips in music view show variable name of music definition
+  - search bar in documentation browser
+  - autocomplete on \include, \language
+  - other small cosmetic improvements
+
+
+Changes in 1.9.4 -- December 5th, 2011
+
+* Updated translations: es, fr, nl
+* New features:
+  - Engrave custom dialog for specifying other engraving formats and options
+  - Character selection tool to insert characters from all unicode blocks
+* Bugfixes:
+  - fix crash on 64bit Linux and Windows introduced in 1.9.3
+
+
+Changes in 1.9.3 -- December 1st, 2011
+
+* LilyPond Documentation browser:
+  - multiple versions of LilyPond documentation can be browsed, local and remote
+* Bug fixes:
+  - fix missing result files for documents with square brackets in filename
+  - fix error message when running LilyPond on modified document with a name but
+    which was never saved before (happens e.g. when opening a non-existing file)
+  - fix crash when MIDI synth stopped or disconnected while playing (issue #4)
+  - fix using PortMidi via ctypes under 64bit Linux (issue #3)
+  - fix error message on invalid textedit links
+  - fix scrollbars covering search box in some GUI styles (issue #2)
+* Improvements:
+  - lyrics hyphenation doesn't require text to be selected anymore
+  - don't try to load non-existing file when clicking a point-and click link
+  - cursor now remains in same column while moving vertically after indent
+  - add articulations etc to autocompletion
+  - dont show the log if the user aborted a job
+
+
+Changes in 1.9.2 -- November 11th, 2011
+
+* Translation updates: es, nl
+* New features:
+  - Built-in MIDI player
+  - Snippets can also be put in File->New from Template. When triggered via that
+    menu, a new document is created. There's also a command to save the current
+    document as a template.
+  - Import and export of snippets.
+
+
+Changes in 1.9.1 -- October 11th, 2011
+
+* Translation updates
+* Help in much more dialogs
+* New icons for some commands
+* It is now possible to set the preferred Qt GUI style
+* Always makes backup copy on save, config setting to retain it
+* Detailed version info in about dialog
+* Lots of small improvements, such as:
+  - Apply Rhythm dialog remembering rhythms
+  - snippet error messagebox now has Edit Snippet button
+* New commands:
+  - Cut and Assign
+  - Copy to Image
+  - Tools -> Format to format whitespace
+  - Update with Convert-Ly (with diff view)
+* Bugfixes:
+  - fix error message on View->Clear error marks
+  - fix autocomplete picking second item if no item is highlighted
+  - some Parser (highlighting) fixes
+  - color buttons now show color on all platforms
+  - fix error message on saving settings if no LilyPond was installed
+
+
+Changes in 1.9.0 -- September 27th, 2011
+
+* Full rewrite, not depending on KDE4 libraries any more
+* Much more modular internal design, easier to add features
+* All translations imported

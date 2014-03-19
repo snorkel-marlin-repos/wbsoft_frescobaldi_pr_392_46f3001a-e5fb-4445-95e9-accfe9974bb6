@@ -1,0 +1,247 @@
+README for developers
+=====================
+
+The Frescobaldi LilyPond sheet music editor is written in Python and uses
+Qt4 for its user interface, via the PyQt4 bindings.
+
+All code and application data is in the frescobaldi_app/ directory. The
+frescobaldi script just imports frescobaldi_app.main.  You can simply run
+./frescobaldi from the commandline after unpacking Frescobaldi.
+
+You can also install the 'frescobaldi_app' package in the system- or user-wide
+python directories and the frescobaldi script in your PATH.  The distutils-based
+installation procedure can do this.
+
+'frescobaldi_app' is not a real package: on startup, the absolute
+'frescobaldi_app' directory is added to sys.path and its own __path__ is cleared
+so all modules and packages inside frescobaldi_app are available as toplevel
+modules and packages.
+
+
+Running Frescobaldi in an interactive shell
+===========================================
+
+To test features or to experiment, you can run Frescobaldi in an interactive
+Python shell. It is recommended to open a shell (e.g. by simply running python
+without arguments, or by using Dreampie or IPython) and then enter:
+
+import frescobaldi_app.main
+
+This ensures the application starts up and uses the correct SIP api (2) for
+QString and QVariant.
+
+Alternatively, you can enter:
+
+from frescobaldi_app.debug import *
+
+This will also start up Frescobaldi and then install some handlers that print
+debugging information on certain events. And it imports the most used modules.
+
+Currently Python 2.6 and 2.7 are supported, but the code should be designed such
+that Frescobaldi works as well with Python 3.
+
+
+How Frescobaldi is organized
+============================
+
+There can be one or more mainwindow.MainWindow instances and one or more
+document.Document instances (when the last Document is closed, another one is
+always constructed). The app module keeps references to those and contains the
+Signals emitted when something changes.
+
+Many parts inside Frescobaldi need to store or cache additional information or
+add features to Documents, MainWindows etc. Instead of clobbering those basic
+classes with an ever-growing number of unrelated groups of methods, a different
+approach is chosen: the plugin module.
+
+This keeps all classes small and only have methods that direcly apply to
+themselves and not to other parts of Frescobaldi (separation of concerns).
+
+So e.g. the resultfiles, highlighter or documentinfo modules contain classes
+for objects that coexist with a Document, and providing their own relevant
+methods, while keeping a weak reference to the Document.
+
+Exchange of messages is done as much as possible using signals (PyQt4 signals
+or from the signals module), or event filters, so adding new features changes as
+less existing code as possible.
+
+
+Some important modules:
+
+main:           Entry point
+info:           Information about the application, such as the version
+toplevel:       Adds the path of frescobaldi_app to sys.path, clears __path__
+                so all modules inside frescobaldi_app can be imported as
+                toplevel modules and packages
+app:            Central hub with global signals, also keeping references to
+                mainwindow and document instances
+mainwindow:     MainWindow (QMainWindow)
+document:       Document (QTextDocument)
+view:           View (QPlainTextEdit)
+menu:           Here the menubar is constructed (by importing all the relevant
+                modules and adding the actions they define)
+plugin:         A simple way to extend objects without them knowing it
+ly:             LilyPond and the LY file format, tokenizer for LY and related
+metainfo:       Stores (optionally) meta information about the document, such
+                as last cursor position, whether to enable auto indent, etc
+panel:          The base class of all dock widgets
+panelmanager:   Add new dock widget tools here
+symbols:        Provides icons of LilyPond-generated SVG files that draw
+                themselves in the default text color.
+
+
+Some completely generic modules (don't have anything to do with Frescobaldi or
+LilyPond):
+
+qpopplerview:   PDF viewer widget using the popplerqt4 binding to Poppler-Qt4
+signals:        An alternative to Qt signals that allows for connections to have
+                priorities, and objects don't have to be Qt objects
+cachedproperty: Caches properties that can be asynchronously computed
+slexer:         A Stateful Lexer, used to build regular expression-based parsers
+hyphenator:     Hyphenate text using hyphenation dictionaries
+node:           A list-like type to build tree structures with
+cursortools:    Some useful functions manipulating QTextCursor instances
+portmidi:       Access the PortMidi library in different ways
+midifile:       Load and play MIDI files
+
+
+Contributing, Coding Style
+==========================
+
+A clean pythonic coding style is preferred, with short methods and method names,
+and small modules and classes that encapsulate functionality in a sensible way.
+See also PEP8 (http://www.python.org/dev/peps/pep-0008/)
+
+Indent: 4 spaces indent with no tabs
+
+Case:   ClassName, module_name, methodname() (or methodName() for classes that
+        inherit from Qt classes). Instance attributes that are not meant to be
+        used from outside an instance are prefixed with an underscore, e.g.
+        self._document.
+        
+        There is a habit, inspired by Qt, to use setters and getters for such
+        attributes: obj.setDocument(document) and obj.document().
+        
+        Names for actions (e.g. file_open) and QSettings keys should always be
+        lowercase and use underscores where needed.
+
+Write code so that adding or extending functionality later only adds lines, not
+changes or removes existing lines.
+
+Module imports: one per line. First the Python standard library imports, then
+PyQt4, then the generic Frescobaldi imports and then imports from the current
+package. The different groups separated by a blank line:
+
+    import os                       # stdlib imports
+    import sys
+
+    from PyQt4.QtCore import ...    # PyQt4 imports
+
+    import app                      # generic Frescobaldi imports
+    import icons
+
+    from . import widget            # imports from current package
+
+
+Adding Functionality
+====================
+
+Separate out core functionality from its GUI. Put core functionality in a basic
+module. For the GUI preferably make a new package/__init__.py, importing that
+e.g. from menu.py while constructing the GUI. An example is the documentwatcher
+base module, it automatically watches open documents on disk, simply by
+listening to signals sent from app. It sends a documentChanged() signal when
+something happens, nothing else. The externalchanges package that gets imported
+from mainwindow.py, starts up the documentwatcher if the user has it enabled.
+
+So the documentwatcher watcher is a module just capable of performing a task,
+without needing to have logic for accessing the preferences, constructing a
+particular GUI, etc. It could, like app and many other modules, be used almost
+unchanged in any other application.
+
+New features that add menu actions can be imported in meny.py, while building
+the menu. Features that should run in a global background thread can have their
+toplevel file (<feature>/__init__.py) imported from main.py or mainwindow.py,
+loading as few as possible on first import.
+
+
+Preparing patches or Pull Requests
+==================================
+
+When preparing a patch or pull request, please add new functionality first.
+Old functionality that is superseded by the newer functions can be removed later
+when the new functionality has been tested thoroughly. Change existing files
+as less as possible. Preferably add new files and packages.
+
+User Interface strings that are meant to be translated should be wrapped in
+_("Message Text") constructs. See also README-translations for vital information
+about how to use the translation mechanism and how to use variables inside
+messages.
+
+Objects that are longer-lived should be able to retranslate their GUIs. This can
+be done by adding a method named translateUI(self), in which you set the texts
+to the user interface objects, and calling app.translateUI() at the end of the
+constructor. Frescobaldi will call your translateUI() method once and also take
+care of calling it again when the user changes the UI language in the
+preferences. You can also do this directly by connecting the method that sets
+the texts to the app.languageChanged signal.
+
+
+Guidelines for writing GUI texts
+================================
+
+* Write short, directly and non-technical
+* For help pages: each paragraph is one translatable string
+* Avoid HTML in texts (but <code>\include</code> is ok)
+* In help pages you can construct html using some helper functions
+* Avoid hard line breaks (<br>) in any texts: use short paragraphs instead
+* Use named format fields: not "page {0} of {1}" but "page {num} of {total}"
+* Don't change existing strings just for cosmetics, it breaks translations
+
+
+Testing and developing under Windows
+====================================
+
+Linux is the recommended developing platform, but it might be necessary to test
+specific functionality or behaviour under Windows. It can be difficult to get
+all the dependencies right, especially the right combi of poppler, pyqt4 and
+sip.
+
+There is an easy way to get setup under Windows and be able to do quite a lot
+of testing and development, you don't even need to install Python at all.
+
+1. install a recent version of Frescobaldi into C:/Program Files/Frescobaldi,
+   using the Frescobaldi.Setup.exe installer
+
+2. install Git Bash for Windows from http://msysgit.github.com/
+
+3. open up the Git Bash command prompt (now you're in a powerful UNIX shell!)
+
+4. make a directory to do Frescobaldi development in:
+
+   mkdir dev
+   cd dev
+
+5. download the frescobaldi source code from GitHub:
+
+   git clone https://github.com/wbsoft/frescobaldi.git
+
+6. go to the frescobaldi directory and copy all the files from the installed
+   version, except for the frescobaldi_app directory:
+   
+   cd frescobaldi
+   
+   cp /c/Program\ Files/Frescobaldi/*.pyd .
+   cp /c/Program\ Files/Frescobaldi/frescobaldi.exe .
+   cp /c/Program\ Files/Frescobaldi/*.dll .
+   cp /c/Program\ Files/Frescobaldi/library.zip .
+   cp -r /c/Program\ Files/Frescobaldi/iconengines .
+   cp -r /c/Program\ Files/Frescobaldi/imageformats .
+
+7. Now you can modify files in frescobaldi_app and run and test Frescobaldi:
+
+   ./frescobaldi.exe
+
+8. Make commits of your changes and either push them to a fork of yours of
+   frescobaldi on GitHub or send them via e-mail.
+

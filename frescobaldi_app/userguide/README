@@ -1,0 +1,130 @@
+The built-in Frescobaldi manual
+===============================
+
+This manual consists of simple markdown-like formatted text files, one per
+help topic.
+
+When writing a help page about "Something", make a file "someting.md" in this
+"userguide" directory.
+
+Write a title and the body content. E.g.:
+
+    === This is the title ===
+
+    This is the body, that explains the feature Something.
+
+If the userguide page has subpages, list them under #SUBDOCS:
+
+    #SUBDOCS
+    something_bla
+    something_other
+    
+You can add pages to the "See also" section:
+
+    #SEEALSO
+    other_page
+
+The text pages support basic markdown-like features. Paragraphs should be
+separated with blank lines. A paragraph can also be a list:
+
+    * item list
+    * another item
+      1. nested numbered list
+          
+         a paragraph in the same nested level
+
+    A description item
+    : explanation of the description.
+
+Headings use 1 to 3 = signs:
+
+    == Sub-title ==
+
+Code examples should start and end with ``` on the start of a line:
+
+    ```lilypond
+    % A LilyPond-formatted music block
+    \relative c' {
+      c d e f g
+    }
+    ```
+
+Inline markdown: *emphasized*, [http://url link text], `code`.
+
+Inline markup (a heading,paragraph or list item) is translated before being
+rendered to HTML.
+
+If you don't want to translate a paragraph (e.g. because is it a list of names,
+or a technical description that should not be translated), you should start
+the paragraph with an exclamation sign "!".
+
+If you *do* want to translated *some parts* of an untranslated paragraph, you
+should wrap that part(s) in "_(" and ")_". E.g.:
+
+    !`-dno-point-and-click`: _(No point and click)_
+
+It is also possible to embed variables in the text. Those always adhere to the
+python format string syntax.
+
+In the markdown help page you could write:
+
+    See {link}.
+    
+The {link} construct is put unchanged in the translatable string, the
+translators know that those are not meant to be translated.
+
+The value is looked up as follows:
+
+1. Look in the #VARS section below the document content (see below)
+
+2. Call the corresponding function in userguide/resolve.py
+
+
+The #VARS section
+==================
+
+Here you can list variables that are referred to in the translatable markdown
+text blocks. Each variable is on one line:
+
+    name type content ...
+
+e.g. when using:
+
+    See {link}.
+
+    #VARS
+    link url http://www.frescobaldi.org/
+    
+"See {link}." will be transformed like:
+    
+    _("See {link}.").format(
+        link='<a href="http://www.frescobaldi.org/">www.frescobaldi.org</a>')
+
+These are the available types:
+
+type:   text:
+
+md          inline markdown-like text (is not translated)
+
+html        html text
+
+text        plain text, HTML tags will be escaped
+
+url         url, will be made clickable
+
+help        name, will make a link to the help page with that name
+
+shortcut    collection action   (will show the currently set keyboard shortcut)
+
+menu        name -> name -> etc
+
+            Will return a nicely formatted menu path, like File->Import->Etc.
+            There are predefined names like file, edit, view etc, but you can
+            also use the exact names, they *will* be translated.
+
+image       filename, will make the image visible
+
+languagename    code, will return the full name of the language in the current
+            language. E.g. languagename nl will return 'Dutch' when the current
+            UI language is English.
+
