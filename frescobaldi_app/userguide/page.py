@@ -108,7 +108,7 @@ class HtmlOutput(simplemarkdown.HtmlOutput):
     def code_start(self, code, specifier=None):
         if specifier == "lilypond":
             import highlight2html
-            self._html.append(highlight2html.html_text(code, full_html=False))
+            self._html.append(highlight2html.html_text(code))
         else:
             self.tag('code')
             self.tag('pre')
@@ -128,6 +128,9 @@ class HtmlOutput(simplemarkdown.HtmlOutput):
 
 class Resolver(object):
     """Resolves variables in help documents."""
+    
+    _rx = re.compile(r"\{([a-z]+(_[a-z]+)*)\}", re.UNICODE)
+    
     def __init__(self, variables=None):
         """Initialize with a list of variables from the #VARS section.
         
@@ -146,7 +149,7 @@ class Resolver(object):
     
     def format(self, text):
         """Replaces all {variable} items in the text."""
-        return read._variable_re.sub(self.replace, text)
+        return self._rx.sub(self.replace, text)
         
     def replace(self, matchObj):
         """Return the replace string for the match.

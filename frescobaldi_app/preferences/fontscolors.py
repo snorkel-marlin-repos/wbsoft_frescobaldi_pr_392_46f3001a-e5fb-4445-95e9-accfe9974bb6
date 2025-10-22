@@ -503,7 +503,6 @@ def allStyleNames():
             'pitch':        _("Pitch"),
             'octave':       _("Octave"),
             'duration':     _("Duration"),
-            'accidental':   _("Accidental"),
             'octavecheck':  _("Octave Check"),
             'fingering':    _("Fingering"),
                               # L10N: For String instruments like Guitar
@@ -523,9 +522,6 @@ def allStyleNames():
             'lyricmode':    _("Lyric Mode"),
             'lyrictext':    _("Lyric Text"),
             'delimiter':    _("Delimiter"),
-            'figbass':      _("Figured Bass"),
-            'figbstep':     _("Figured Bass Step"),
-            'figbmodif':    _("Figured Bass Modifier"),
             'context':      _("Context"),
             'grob':         _("Layout Object"),
             'property':     _("Property"),

@@ -25,11 +25,12 @@ from __future__ import unicode_literals
 
 import os
 import re
+import string
 
 import simplemarkdown
 
 
-_variable_re = re.compile(r"\{([a-z]+(_[a-z]+)*)\}", re.UNICODE)
+_string_formatter_parse = string.Formatter().parse
 _document_split_re = re.compile(r'^#([A-Z]\w+)\s*$', re.MULTILINE)
 
 
@@ -84,13 +85,10 @@ class Parser(simplemarkdown.Parser):
         variable names.
         
         """
-        pos = 0
-        for m in _variable_re.finditer(s):
-            if m.start() > pos and any(c.isalpha() for c in s[pos:m.start()]):
+        import string
+        for literal, field, fmt, conv in _string_formatter_parse(s):
+            if any(c.isalpha() for c in literal):
                 return self.translate(s)
-            pos = m.end()
-        if pos < len(s) and any(c.isalpha() for c in s[pos:]):
-            return self.translate(s)
         return s
 
     def translate(self, text):

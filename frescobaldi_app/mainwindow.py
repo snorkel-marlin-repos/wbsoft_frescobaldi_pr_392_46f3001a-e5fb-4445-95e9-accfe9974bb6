@@ -53,7 +53,6 @@ import panelmanager
 import engrave
 import scorewiz
 import externalchanges
-import browseriface
 import vcs
 
 
@@ -451,9 +450,6 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, app.caption(_("Error")),
                 _("Can't write to destination:\n\n{url}").format(url=dest))
             return False
-        if QSettings().value("strip_trailing_whitespace", False, bool):
-            import reformat
-            reformat.remove_trailing_whitespace(QTextCursor(doc))
         b = backup.backup(filename)
         success = doc.save()
         if not success:
@@ -895,12 +891,11 @@ class MainWindow(QMainWindow):
         t.setObjectName('toolbar_main')
         t.addAction(ac.file_new)
         t.addAction(ac.file_open)
+        t.addSeparator()
         t.addAction(ac.file_save)
         t.addAction(ac.file_save_as)
-        t.addAction(ac.file_close)
         t.addSeparator()
-        t.addAction(browseriface.get(self).actionCollection.go_back)
-        t.addAction(browseriface.get(self).actionCollection.go_forward)
+        t.addAction(ac.file_close)
         t.addSeparator()
         t.addAction(ac.edit_undo)
         t.addAction(ac.edit_redo)

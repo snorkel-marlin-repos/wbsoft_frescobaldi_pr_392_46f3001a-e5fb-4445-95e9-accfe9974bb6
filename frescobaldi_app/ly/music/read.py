@@ -777,8 +777,7 @@ class Reader(object):
                 break
         for t in skip(self.consume()):
             i = self.read_lyric_item(t) or self.read_item(t)
-            if i:
-                item.append(i)
+            item.append(i)
             break
         return item
     
@@ -984,11 +983,6 @@ class Reader(object):
     def handle_markup_command(self, t):
         item = self.factory(MarkupCommand, t)
         self.add_markup_arguments(item)
-        return item
-    
-    @_markup(lilypond.MarkupUserCommand)
-    def handle_markup_user_command(self, t):
-        item = self.factory(MarkupUserCommand, t)
         return item
     
     @_markup(lilypond.OpenBracketMarkup)

@@ -2,47 +2,6 @@ ChangeLog of Frescobaldi, http://www.frescobaldi.org/
 =====================================================
 
 
-Changes in 2.0.16 -- 
-
-* Translations:
-  - updated: nl
-* New features
-  - preference to automatically strip trailing whitespace on save (issue #274)
-  - in Tools -> Rhythm: new command to remove duration scalings that contain 
-    a fraction value (the action was already available for some time, but it 
-    wasn't in the menu)
-* Improvements:
-  - jumps in the Document Outline also allow navigating back
-  - autocompile does only happen when a document has toplevel markup or music
-  - LilyPond instance can be selected in convert-ly dialog (wish #311)
-  - Score Wizard: In the midi section the \tempo x=y syntax is now used when
-    LilyPond version >= 2.16 is used (issue #337)
-  - in the builtin manual, if there is no "Next:" page, add a link to the next
-    page of the first parent page that has a next page. The link is called
-    "Next Chapter:" and allows for continuous reading of the manual.
-* Bugfixes:
-  - fix html export and copy not using the correct color scheme
-  - fix AttributeError in handle_lyricmode while typing \lyricmode
-  - fix LilyPond version chooser not defaulting to the default LilyPond version
-  - fix indenter aligning on comment
-
-
-Changes in 2.0.15 -- March 11th, 2014
-
-* Translations:
-  - updated: nl, fr
-* New features:
-  - in context menu: Jump to definition (wish #123)
-  - in View menu: view file or definition at cursor, combines the old
-    File->Open File at Cursor action with the new Jump to definition action
-  - new toolbar buttons to browse back after a jump to definition
-* Improvements:
-  - better highlighting of figuremode
-* Bugfixes:
-  - fix ValueError message when typing << >> or \partcombine
-  - fix IndexError when typing 'variable ='
-
-
 Changes in 2.0.14 -- March 7th, 2014
 
 * Translations:
