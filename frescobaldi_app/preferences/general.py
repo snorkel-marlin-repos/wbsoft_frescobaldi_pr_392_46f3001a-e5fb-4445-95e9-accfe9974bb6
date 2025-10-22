@@ -208,10 +208,8 @@ class SavingDocument(preferences.Group):
         layout = QVBoxLayout()
         self.setLayout(layout)
         
-        self.stripwsp = QCheckBox(toggled=self.changed)
         self.backup = QCheckBox(toggled=self.changed)
         self.metainfo = QCheckBox(toggled=self.changed)
-        layout.addWidget(self.stripwsp)
         layout.addWidget(self.backup)
         layout.addWidget(self.metainfo)
         
@@ -227,10 +225,6 @@ class SavingDocument(preferences.Group):
         
     def translateUI(self):
         self.setTitle(_("When saving documents"))
-        self.stripwsp.setText(_("Strip trailing whitespace"))
-        self.stripwsp.setToolTip(_(
-            "If checked, Frescobaldi will remove unnecessary whitespace at the "
-            "end of lines (but not inside multi-line strings)."))
         self.backup.setText(_("Keep backup copy"))
         self.backup.setToolTip(_(
             "Frescobaldi always backups a file before overwriting it "
@@ -242,14 +236,12 @@ class SavingDocument(preferences.Group):
         
     def loadSettings(self):
         s = QSettings()
-        self.stripwsp.setChecked(s.value("strip_trailing_whitespace", False, bool))
         self.backup.setChecked(s.value("backup_keep", False, bool))
         self.metainfo.setChecked(s.value("metainfo", True, bool))
         self.basedir.setPath(s.value("basedir", "", type("")))
         
     def saveSettings(self):
         s = QSettings()
-        s.setValue("strip_trailing_whitespace", self.stripwsp.isChecked())
         s.setValue("backup_keep", self.backup.isChecked())
         s.setValue("metainfo", self.metainfo.isChecked())
         s.setValue("basedir", self.basedir.path())
@@ -280,9 +272,9 @@ class NewDocument(preferences.Group):
         
     def translateUI(self):
         self.setTitle(_("When creating new documents"))
-        self.emptyDocument.setText(_("Create an empty document"))
-        self.lilyVersion.setText(_("Create a document that contains the LilyPond version statement"))
-        self.template.setText(_("Create a document from a template:"))
+        self.emptyDocument.setText(_("Create a new document empty"))
+        self.lilyVersion.setText(_("Write the LilyPond version in a new document"))
+        self.template.setText(_("Use a default template:"))
         from snippet import snippets
         for i, name in enumerate(self._names):
             self.combo.setItemText(i, snippets.title(name))

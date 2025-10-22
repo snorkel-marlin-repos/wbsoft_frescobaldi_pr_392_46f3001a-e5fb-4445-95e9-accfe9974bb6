@@ -20,9 +20,6 @@ The following people contributed to {appname}:
 !Richard Cognot:
 : Kinetic Scrolling for the Music View
 
-!Marnen Laibow-Koser:
-: Homebrew formula for Mac OS X
-
 !Davide Liessi:
 : Mac OS X packaging and various other improvements
 
@@ -88,9 +85,6 @@ The following people contributed to {appname}:
 
 {lang_uk}:
 :  !Dmytro O. Redchuk
-
-And of course, a big *Thank You* goes to the LilyPond developers, who create 
-such an excellent music engraver!
 
 
 #VARS

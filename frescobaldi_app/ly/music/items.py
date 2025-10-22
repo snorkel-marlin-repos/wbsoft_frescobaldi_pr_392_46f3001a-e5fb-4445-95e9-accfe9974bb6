@@ -173,30 +173,6 @@ class Item(node.WeakNode):
                             for i in find(i, depth-1):
                                 yield i
         return find(self, depth)
-    
-    def has_output(self, _seen_docs=None):
-        """Return True if this node has toplevel music, markup, book etc.
-        
-        I.e. returns True when LilyPond would likely generate output. Usually
-        you'll call this method on a Document, Score, BookPart or Book node.
-        
-        You should not supply the _seen_docs argument; it is used internally 
-        to avoid traversing recursively nested include files.
-        
-        """
-        if _seen_docs is None:
-            _seen_docs = set()
-        _seen_docs.add(self)
-        for n in self:
-            if isinstance(n, (Music, Markup)):
-                return True
-            elif isinstance(n, (Book, BookPart, Score)):
-                if n.has_output(_seen_docs):
-                    return True
-            elif isinstance(n, Include):
-                doc = self.toplevel().get_included_document_node(n)
-                if doc and doc not in _seen_docs and doc.has_output(_seen_docs):
-                    return True
 
 
 class Document(Item):
@@ -981,33 +957,6 @@ class MarkupCommand(Item):
     """A markup command, such as \italic etc."""
 
 
-class MarkupUserCommand(Item):
-    """A user-defined markup command"""
-    def name(self):
-        """Return the name of this user command (without the \\)."""
-        return self.token[1:]
-    
-    def value(self):
-        """Find the value assigned to this variable."""
-        for i in self.iter_toplevel_items_include():
-            if isinstance(i, Assignment) and i.name() == self.name():
-                return i.value()
-            elif isinstance(i, Scheme):
-                for j in i:
-                    if isinstance(j, SchemeList):
-                        for k in j:
-                            if isinstance(k, SchemeItem) and k.token == 'define-markup-command':
-                                for l in j[1::]:
-                                    if isinstance(l, SchemeList):
-                                        for m in l:
-                                            if isinstance(m, SchemeItem) and m.token == self.name():
-                                                return i
-                                            break
-                                    break
-                            break
-                    break
-
-
 class MarkupScore(Item):
     """A \\score inside Markup."""
 
@@ -1028,8 +977,7 @@ class Assignment(Item):
     
     def value(self):
         """The assigned value."""
-        if len(self):
-            return self[-1]
+        return self[-1]
 
 
 class Book(Container):

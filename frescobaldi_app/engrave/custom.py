@@ -37,7 +37,7 @@ import icons
 import job
 import jobmanager
 import panelmanager
-import lilychooser
+import lilypondinfo
 import listmodel
 import widgets
 import qutil
@@ -55,7 +55,7 @@ class Dialog(QDialog):
         self.setLayout(layout)
         
         self.versionLabel = QLabel()
-        self.lilyChooser = lilychooser.LilyChooser()
+        self.versionCombo = QComboBox()
         
         self.outputLabel = QLabel()
         self.outputCombo = QComboBox()
@@ -85,7 +85,7 @@ class Dialog(QDialog):
         
         self.modeCombo.addItems(['preview', 'publish', 'debug'])
         layout.addWidget(self.versionLabel, 0, 0)
-        layout.addWidget(self.lilyChooser, 0, 1, 1, 3)
+        layout.addWidget(self.versionCombo, 0, 1, 1, 3)
         layout.addWidget(self.outputLabel, 1, 0)
         layout.addWidget(self.outputCombo, 1, 1, 1, 3)
         layout.addWidget(self.resolutionLabel, 2, 0)
@@ -120,6 +120,9 @@ class Dialog(QDialog):
         if s.value("default_output_target", "pdf", type("")) == "svg":
             self.outputCombo.setCurrentIndex(3)
         
+        self.loadLilyPondVersions()
+        self.selectLilyPondInfo(lilypondinfo.preferred())
+        app.settingsChanged.connect(self.loadLilyPondVersions)
         app.jobFinished.connect(self.slotJobFinished)
         self.outputCombo.currentIndexChanged.connect(self.makeCommandLine)
         self.modeCombo.currentIndexChanged.connect(self.makeCommandLine)
@@ -151,11 +154,26 @@ class Dialog(QDialog):
             self._document = None
     
     def setDocument(self, doc):
-        self.lilyChooser.setLilyPondInfo(command.info(doc))
+        self.selectLilyPondInfo(command.info(doc))
         if jobmanager.isRunning(doc):
             self._document = doc
             self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
         
+    def loadLilyPondVersions(self):
+        infos = lilypondinfo.infos() or [lilypondinfo.default()]
+        infos.sort(key = lambda i: i.version() or (999,))
+        self._infos = infos
+        index = self.versionCombo.currentIndex()
+        self.versionCombo.clear()
+        for i in infos:
+            icon = 'lilypond-run' if i.version() else 'dialog-error'
+            self.versionCombo.addItem(icons.get(icon), i.prettyName())
+        self.versionCombo.setCurrentIndex(index)
+    
+    def selectLilyPondInfo(self, info):
+        if info in self._infos:
+            self.versionCombo.setCurrentIndex(self._infos.index(info))
+    
     def makeCommandLine(self):
         """Reads the widgets and builds a command line."""
         f = formats[self.outputCombo.currentIndex()]
@@ -176,7 +194,7 @@ class Dialog(QDialog):
         else:
             cmd.append('-dno-delete-intermediate-files')
         d = {
-            'version': self.lilyChooser.lilyPondInfo().version,
+            'version': self._infos[self.versionCombo.currentIndex()].version,
             'resolution': self.resolutionCombo.currentText(),
             'antialias': self.antialiasSpin.value(),
         }
@@ -188,7 +206,7 @@ class Dialog(QDialog):
     def getJob(self, document):
         """Returns a Job to start."""
         filename, includepath = documentinfo.info(document).jobinfo(True)
-        i = self.lilyChooser.lilyPondInfo()
+        i = self._infos[self.versionCombo.currentIndex()]
         cmd = []
         for t in self.commandLine.toPlainText().split():
             if t == '$lilypond':

@@ -100,7 +100,6 @@ def default_mapping():
             style('command', 'function', (lilypond.Command, lilypond.Skip)),
             style('pitch', None, (lilypond.MusicItem,)),
             style('octave', None, (lilypond.Octave,)),
-            style('accidental', None, (lilypond.Accidental, lilypond.FigureAccidental)),
             style('duration', None, (lilypond.Duration,)),
             style('dynamic', None, (lilypond.Dynamic,)),
             style('check', None, (lilypond.OctaveCheck, lilypond.PipeSymbol)),
@@ -108,17 +107,13 @@ def default_mapping():
             style('fingering', None, (lilypond.Fingering,)),
             style('stringnumber', None, (lilypond.StringNumber,)),
             style('slur', None, (lilypond.Slur,)),
-            style('beam', None, (lilypond.Beam, lilypond.FigureBracket,)),
             style('chord', None, (lilypond.Chord, lilypond.ChordItem)),
             style('markup', 'function', (lilypond.Markup,)),
             style('lyricmode', 'function', (lilypond.LyricMode,)),
             style('lyrictext', None, (lilypond.Lyric,)),
-            style('repeat', 'function', (lilypond.Repeat, lilypond.Tremolo,)),
+            style('repeat', 'function', (lilypond.Repeat,)),
             style('specifier', 'variable', (lilypond.Specifier,)),
             style('usercommand', 'variable', (lilypond.UserCommand,)),
-            style('figbass', None, (lilypond.Figure,)),
-            style('figbstep', None, (lilypond.FigureStep,)),
-            style('figbmodif', None, (lilypond.FigureModifier,)),
             style('delimiter', 'keyword', (lilypond.Delimiter,)),
             style('context', None, (lilypond.ContextName,)),
             style('grob', None, (lilypond.GrobName,)),
@@ -130,6 +125,7 @@ def default_mapping():
             style('stringescape', 'escape', (lilypond.StringQuoteEscape,)),
             style('comment', 'comment', (lilypond.Comment,)),
             style('error', 'error', (lilypond.Error,)),
+            style('repeat', None, (lilypond.Repeat, lilypond.Tremolo,)),
         )),
         ('scheme', (
             style('scheme', None, (lilypond.SchemeStart, scheme.Scheme,)),
@@ -527,7 +523,7 @@ class HtmlWriter(object):
     encoding = 'UTF-8'
     
     stylesheet_ref = None
-    full_html = True
+    
     
     def html(self, cursor):
         """Return the output HTML."""
@@ -564,9 +560,6 @@ class HtmlWriter(object):
             body = add_line_numbers(cursor, body, num_attrs, doc_attrs)
         else:
             body = '<pre{0}>{1}</pre>'.format(html_format_attrs(doc_attrs), body)
-        
-        if not self.full_html:
-            return body
         
         if self.stylesheet_ref:
             css = None
